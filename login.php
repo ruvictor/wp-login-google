@@ -17,8 +17,8 @@ defined( 'ABSPATH' ) or die();
 require_once 'google-api/vendor/autoload.php';
 
 $gClient = new Google_Client();
-$gClient->setClientId("");
-$gClient->setClientSecret("");
+$gClient->setClientId("962708155950-m1ovo45qcu6k4mql3sjjjgcv9g62qdm9.apps.googleusercontent.com");
+$gClient->setClientSecret("OsWJ8W4c4eSYSrHKRqND95QI");
 $gClient->setApplicationName("Vicode Media Login");
 $gClient->setRedirectUri("https://localhost/wp-admin/admin-ajax.php?action=vm_login_google");
 $gClient->addScope("https://www.googleapis.com/auth/plus.login https://www.googleapis.com/auth/userinfo.email");
@@ -30,17 +30,29 @@ $login_url = $gClient->createAuthUrl();
 add_shortcode('google-login', 'vm_login_with_google');
 function vm_login_with_google(){
     global $login_url;
+    $btnContent = '
+        <style>
+            .googleBtn{
+                display: table;
+                margin: 0 auto;
+                background: #4285F4;
+                padding: 15px;
+                border-radius: 3px;
+                color: #fff;
+            }
+        </style>
+    ';
     if(!is_user_logged_in()){
             // checking to see if the registration is opend
             if(!get_option('users_can_register')){
-                return('Registration is closed!');
+                return($btnContent . 'Registration is closed!');
             }else{
-                return '<a href="'.$login_url.'">Login With Google</a>';
+                return $btnContent . '<a class="googleBtn" href="'.$login_url.'">Login With Google</a>';
             }
 
     }else{
         $current_user = wp_get_current_user();
-        return 'Hi ' . $current_user->user_login . '! - <a href="/wp-login.php?action=logout">Log Out</a>';
+        return $btnContent . '<div class="googleBtn">Hi, ' . $current_user->first_name . '! - <a href="/wp-login.php?action=logout">Log Out</a></div>';
     }
 }
 
